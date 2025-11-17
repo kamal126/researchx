@@ -1,3 +1,18 @@
+# AI-Powered Research Document Generator
+
+## Day 1 (Setup Only)
+- Next.js new project created
+- Tailwind configured
+- shadcn/ui installed
+- Basic UI added (Topic input + Button)
+- No AI integration yet
+- No backend route yet
+
+## Commands to run:
+npm run dev
+
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
