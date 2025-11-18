@@ -23,7 +23,7 @@ export async function generateAIOutline(
 ): Promise<DocumentOutline> {
     try {
         const { object } = await generateObject({
-            model: google("gemini-2.0-flash", {}),
+            model: google("gemini-2.0-flash"),
             system:
                 "You are a helpful assistant that specializes in creating detailed, well-structured research document outlines for academic purpose.",
             prompt: [
