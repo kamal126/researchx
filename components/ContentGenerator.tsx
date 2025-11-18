@@ -25,7 +25,6 @@ import { cn } from "@/lib/utils";
 import { generateAIContent } from "@/lib/actions/content";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { Outline } from "jspdf";
 
 interface ContentGeneratorProps {
   outline: DocumentOutline;
@@ -52,7 +51,7 @@ const ContentGenerator: React.FC<ContentGeneratorProps> = ({
   const [progressPercentage, setProgressPercentage] = useState(0);
 
   // count selected Subtopics
-  const selectedSubtopics = outline.sections
+  const selectedSubtopics = localOutline.sections
     .filter((section) => section.isSelected)
     .flatMap((section) =>
       section.subtopics.filter((subtopic) => subtopic.isSelected)
@@ -60,17 +59,16 @@ const ContentGenerator: React.FC<ContentGeneratorProps> = ({
   const totalSubtopics = selectedSubtopics.length;
 
   // count subtopics that have content
-  const subtopicsWithContent = outline.sections
+  const subtopicsWithContent = localOutline.sections
     .flatMap((section) => section.subtopics)
-    .filter((subtopic) => subtopic.content.length > 0).length;
+    .filter((subtopic) => subtopic.content &&  subtopic.content.length > 0).length;
 
+  /*
   useEffect(() => {
     // set default aactive tab to first selected section
     if (!activeTab && outline.sections.some((s) => s.isSelected)) {
-      const firstSelectedSection = outline.sections.find((s) => s.isSelected);
-      if (firstSelectedSection) {
-        setActiveTab(firstSelectedSection.id);
-      }
+      const first= outline.sections.find((s) => s.isSelected);
+      if (first) setActiveTab(first.id);
     }
 
     setLocalOutline(outline);
@@ -92,6 +90,33 @@ const ContentGenerator: React.FC<ContentGeneratorProps> = ({
     subtopicsWithContent,
     onProgressUpdate,
   ]);
+  */
+  
+// 1. sync outline when parent changes
+  useEffect(() => {
+    setLocalOutline(outline);
+  },[outline]);
+
+//   2. set initial active tab (run once)
+  useEffect(()=>{
+    if(!activeTab){
+        const first = outline.sections.find(s => s.isSelected);
+        if(first) setActiveTab(first.id);
+    }
+  },[]);
+// 3. Recalculate progress when localOutline change
+  useEffect(()=>{
+    if(totalSubtopics>0){
+        const progress = Math.round(
+            (subtopicsWithContent / totalSubtopics) * 100
+        );
+
+        setProgressPercentage(progress);
+        onProgressUpdate?.(progress);
+    }
+  },[localOutline]);
+
+
 
   const generateSubtopicContent = async (
     sectionId: string,
@@ -152,7 +177,7 @@ const ContentGenerator: React.FC<ContentGeneratorProps> = ({
     // get all selected sections and subtopics
     const sectionsToProcess = localOutline.sections.filter((s) => s.isSelected);
 
-    let completedCount = 0;
+    // let completedCount = 0;
     let updatedOutline = { ...localOutline };
 
     for (const section of sectionsToProcess) {
@@ -202,10 +227,15 @@ const ContentGenerator: React.FC<ContentGeneratorProps> = ({
           onOutlineUpdate(updatedOutline);
 
           // update progress
-          completedCount++;
-          const progress = Math.round(
-            ((subtopicsWithContent + completedCount) / totalSubtopics) * 100
-          );
+        //   completedCount++;
+
+          const doneCount = updatedOutline.sections
+            .flatMap(s => s.subtopics)
+            .filter(st => st.content && st.content.length > 0).length;
+
+          const progress = Math.round((doneCount / totalSubtopics) * 100);
+
+
           setProgressPercentage(progress);
           if (onProgressUpdate) {
             onProgressUpdate(progress);
