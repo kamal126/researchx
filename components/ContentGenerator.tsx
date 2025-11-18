@@ -158,7 +158,7 @@ const ContentGenerator: React.FC<ContentGeneratorProps> = ({
     for (const section of sectionsToProcess) {
       // filter to only sected subtopics
       const subtopicsToProcess = section.subtopics.filter(
-        (st) => st.isSelected && !st.content
+        (st) => st.isSelected && (!st.content || st.content.trim().length===0)
       );
 
       // update active tab to current section being processed
@@ -186,7 +186,7 @@ const ContentGenerator: React.FC<ContentGeneratorProps> = ({
           updatedOutline = {
             ...updatedOutline,
             sections: updatedOutline.sections.map((s) =>
-              s.id == section.id
+              s.id === section.id
                 ? {
                     ...s,
                     subtopics: s.subtopics.map((st) =>
