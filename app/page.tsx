@@ -393,7 +393,7 @@ const Page = () => {
         >
           Made by{" "}
           <a
-            href="http://aadi.is-a.dev"
+            href="https://kamalportfolioweb.netlify.app/"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:underline hover:text-primary duration-300 transition-all"
