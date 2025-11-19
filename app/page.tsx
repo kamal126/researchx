@@ -398,7 +398,7 @@ const Page = () => {
             rel="noopener noreferrer"
             className="hover:underline hover:text-primary duration-300 transition-all"
           >
-            Aditya
+            Kamal Chandra
           </a>
         </p>
       </section>
