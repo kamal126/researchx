@@ -1,7 +1,8 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { jsPDF } from "jspdf"
-import { saveAs } from "file-saver"
+// import { saveAs } from "file-saver"
+import * as FileSaver from "file-saver";
 import { toast } from "sonner"
 import { Document, Packer, Paragraph, HeadingLevel, TextRun } from "docx"
 import { DocumentOutline } from "./types"
@@ -398,7 +399,7 @@ export const exportDocument = (
       });
 
       Packer.toBlob(doc).then((blob) => {
-        saveAs(blob, `${outline.mainTopic.replace(/\s+/g, "_")}.docx`);
+        FileSaver.saveAs(blob, `${outline.mainTopic.replace(/\s+/g, "_")}.docx`);
         toast.success("Your DOCX file has been downloaded.");
       });
     }
